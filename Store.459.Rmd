@@ -1,0 +1,52 @@
+---
+title: "Store 459"
+author: "Training Team"
+date: "March 6, 2016"
+output: html_document
+---
+
+Getting in the Data:
+
+```{r}
+path <- "/Users/Patrick/Documents/Meetups/Analyze This/WAND Challange/"
+filename <- "Store 459 Predict M1-3 3-2-16.csv"
+store459 <- read.csv(paste(path,filename, sep = ""),  na = "*")
+
+#Alternatively you could import the Excel file 
+filename <- "Store 459 Predict M1-3 3-2-16.xlsx"
+
+#First you'll need to install the readxl package 
+#install.packages("readxl")  
+
+#And load it by typing in this command:
+library(readxl)
+store459xl <- read_excel(paste(path,filename, sep = ""), sheet = 1, na = "*")
+```
+
+Now that we have our data. It's time to clean it up and get it into a form we want. "[tidyr](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)" is a good package to tidy up one's data. And "[dyplr](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)" provides a great set of tools for efficiently manipulating datasets in R.
+
+```{r}
+#install.packages("tidyr")
+#install.packages("dplyr")
+library(tidyr)
+library(dplyr)
+
+#incert code for creating variables: minaries, year, month, day of week, etc. for the regression model.
+
+```
+
+Now that we've created all of the variables we'll need for analysis, we can begin with our regression modeling. 
+
+```{r}
+attach(store459xl)
+#model1 <- lm(NetSales ~ NewYr ValDay Easter MemDay Jul4 
+#sumarize(model1) 
+```
+
+Visualizing data:
+
+```{r}
+#Create graphs and charts showing how the model fairs against the real data. 
+```
+
+
