@@ -23,30 +23,47 @@ library(readxl)
 store459xl <- read_excel(paste(path,filename, sep = ""), sheet = 1, na = "*")
 ```
 
-Now that we have our data. It's time to clean it up and get it into a form we want. "[tidyr](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)" is a good package to tidy up one's data. And "[dyplr](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)" provides a great set of tools for efficiently manipulating datasets in R.
-
+Now that we have our data. It's time to clean it up and get it into a form we want. "[tidyr](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)" is a good package to tidy up one's data. And "[dyplr](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)" provides a great set of tools for efficiently manipulating data sets in R. [Here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) is a cheat sheet help manipulate data and create variables.
 ```{r}
 #install.packages("tidyr")
 #install.packages("dplyr")
 library(tidyr)
 library(dplyr)
-
-#incert code for creating variables: minaries, year, month, day of week, etc. for the regression model.
-
 ```
+
+Let's look at the data:
+```{r}
+tbl_df(store459xl)
+```
+A tbl is like data.frame, but it's shows up in the console much better. You can also use the function "View" with a capital "V" to look at a spreadsheet display. 
+
+Now let's create indicator variables for DOW, Month, Year:
+```{r}
+store459xl <- cbind(store459xl, model.matrix( ~ Month - 1, data = store459xl))
+store459xl <- cbind(store459xl, model.matrix( ~ Year - 1, data = store459xl))
+store459xl <- cbind(store459xl, model.matrix( ~ DOW - 1, data = store459xl))
+```
+This method is a great way of creating indicator variables from a factor variable. 
+
+But if you just need one indicator variable, there are more intuitive methods. 
+```{r}
+store459xl <- mutate(store459xl, DOW.test = as.numeric(DOW=="Tue"))
+```
+
 
 Now that we've created all of the variables we'll need for analysis, we can begin with our regression modeling. 
 
 ```{r}
 attach(store459xl)
-#model1 <- lm(NetSales ~ NewYr ValDay Easter MemDay Jul4 
-#sumarize(model1) 
+model1 <- lm(NetSales ~ NewYr + ValDay + Easter + MemDay + Jul4 + Year2014 + MonthJan + MonthFeb + MonthAug + MonthSep + MonthDec + DOWThu + DOWWed + DOWThu + DOWFri + DOWSat + PRCP + Tmax_DegF + `Net$LstYr`)
+summary(model1) 
 ```
 
 Visualizing data:
-
 ```{r}
 #Create graphs and charts showing how the model fairs against the real data. 
+plot.ts(NetSales)
+
 ```
 
 
