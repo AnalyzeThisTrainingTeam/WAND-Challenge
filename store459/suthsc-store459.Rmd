@@ -1,0 +1,51 @@
+---
+title: "Store-479"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Loading the dataset
+===================
+
+```{r loaddata}
+path <- "/home/suthsc/src/WAND-Challenge/"
+filename <- "store-459.csv"
+store459 <- read.csv(paste(path,filename, sep = ""),  na = "*")
+```
+
+Create a Vector of Dependant Variables
+======================================
+
+```{r}
+vars = c("NetSales", "DOW")
+```
+
+Filter the information
+======================
+
+```{r}
+d <- store459[,vars]
+```
+
+Perform the linear analysis
+===========================
+
+```{r}
+attach(d)
+
+model1 <- glm(NetSales ~ ., data = d)
+summary(model1)
+
+anova(model1)
+
+detach(d)
+```
+
+# forward selection
+# backwards elimination
+
+# control chart
+# probability plot

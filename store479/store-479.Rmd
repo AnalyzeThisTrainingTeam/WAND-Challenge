@@ -1,0 +1,34 @@
+---
+title: "Store-479"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load the data
+
+```{r dataload}
+path <- "/home/suthsc/src/WAND-Challenge/store479/"
+filename <- "store-479.csv"
+store479 <- read.csv(paste(path,filename, sep = ""),  na = "*")
+summary(store479)
+```
+
+## Create an Array of Dependant Variables
+
+```{r depvars}
+y <- 'NetSales'
+vars <- c('DOW' )
+```
+
+## NetSales Plot
+
+A time series plot of the NetSales variable
+
+```{r netSalesPlot, echo=FALSE}
+plot(store479$BusinessDate, store479$NetSales, type = 'b')
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
