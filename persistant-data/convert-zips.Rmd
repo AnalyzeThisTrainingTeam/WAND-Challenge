@@ -1,0 +1,46 @@
+---
+title: "Zips to lattitude and longitude"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(dplyr)
+```
+
+## Zip Code data
+
+Zip code data was obtained from a free zip code database found at [federalgovernmentzipcodes.us](http://federalgovernmentzipcodes.us/free-zipcode-database-Primary.csv).
+
+```{r zipcodeDatabase, echo=FALSE}
+zipcode.database <- read.csv("~/src/WAND-Challenge/persistant-data/free-zipcode-database-Primary.csv")
+zipcode.database[1:3,]
+```
+
+## Data Points
+
+We also have a list of zip codes which are involved in the challenge.
+
+```{r zips, echo=FALSE}
+zips <- read.csv("~/src/WAND-Challenge/persistant-data/zips.csv")
+zips[1:3,]
+```
+
+## Filter Database Values
+
+We want to only keep values from the database which are also in the zips data frame.
+
+```{r filter}
+filteredZips <- data.frame(row.names = names(zipcode.database))
+for (val in zips$ZIP_Code) {
+  filteredZips <- rbind(filteredZips, filter(zipcode.database, Zipcode == val))
+}
+filteredZips
+```
+
+## Write the output csv file
+
+```{r output}
+write.csv(filteredZips, file = "~/src/WAND-Challenge/persistant-data/filteredZips.csv")
+```
+
