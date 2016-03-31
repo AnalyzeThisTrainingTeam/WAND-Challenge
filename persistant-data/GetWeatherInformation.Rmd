@@ -1,0 +1,57 @@
+---
+title: "GetWeatherInformation"
+output: html_document
+---
+
+## Setup
+
+We are using the [Rforecastio library](http://rud.is/b/2013/09/08/rforecastio-simple-r-package-to-access-forecast-io-weather-data/) available on [github](https://github.com/hrbrmstr/Rforecastio) in order to interact with the forcast.io api. In order to use the api you will need you api key stored in your `.Renviron` file in you home directory.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(Rforecastio)
+```
+
+## Load Location Data
+
+Load our filtered zip code data. These are the locations we are interested in.
+
+```{r Prepare}
+filteredZips <- read.csv("~/src/WAND-Challenge/persistant-data/filteredZips.csv")
+attributes(filteredZips)
+```
+
+For each of the filtered zips we want to request the daily historic weather information from 2013-01-01 to 2015-12-31.
+
+```{r GetWeatherData}
+# for (rowNum in 1:length(filteredZips$Zipcode)) {
+for (rowNum in 1:2) {
+  Zipcode <- filteredZips[rowNum,]$Zipcode
+  Lat <- filteredZips[rowNum,]$Lat
+  Long <- filteredZips[rowNum,]$Long
+  timespan <- seq(ISOdate(2013, 1, 1), ISOdate(2013, 1, 2), by = "day")
+  
+  for (i in 1:length(timespan)) {
+    print(paste("Getting forcast for", Zipcode, "for date", timespan[i], sep = " "))
+    fio.list <- get_forecast_for(Lat, Long, format(timespan[i], "%Y-%m-%dT%H:%M:%S"))
+    
+    if (exists("daily.weather")) {
+      rbind(daily.weather, cbind(Zipcode, fio.list$daily))
+    } else {
+      daily.weather <- cbind(Zipcode, fio.list$daily)
+    }
+    
+    if (exists("hourly.weather")) {
+      rbind(hourly.weather, cbind(Zipcode, fio.list$hourly))
+    } else {
+      hourly.weather <- cbind(Zipcode, fio.list$hourly)
+    }
+    
+  }
+  
+  write.csv(hourly.weather, "~/src/WAND-Challenge/persistant-data/hourly-weather.csv", row.names = FALSE)
+  write.csv(daily.weather, "~/src/WAND-Challenge/persistant-data/daily-weather.csv", row.names = FALSE)
+}
+
+
+```
