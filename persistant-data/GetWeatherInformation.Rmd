@@ -24,34 +24,75 @@ attributes(filteredZips)
 For each of the filtered zips we want to request the daily historic weather information from 2013-01-01 to 2015-12-31.
 
 ```{r GetWeatherData}
-# for (rowNum in 1:length(filteredZips$Zipcode)) {
-for (rowNum in 1:2) {
+daily.weather <- data.frame(
+  Zipcode=character(),
+  time=as.POSIXlt(character()),
+  summary=character(),
+  icon=character(),
+  sunriseTime=as.POSIXlt(character()),
+  sunsetTime=as.POSIXlt(character()),
+  moonPhase=numeric(),
+  precipIntensity=numeric(),
+  precipIntensityMax=numeric(),
+  precipIntensityMaxTime=as.POSIXlt(character()),
+  precipProbability=numeric(),
+  precipType=character(),
+  precipAccumulation=numeric(),
+  temperatureMin=numeric(),
+  temperatureMinTime=as.POSIXlt(character()),
+  temperatureMax=numeric(),
+  temperatureMaxTime=as.POSIXlt(character()),
+  apparentTemperatureMin=numeric(),
+  apparentTemperatureMinTime=as.POSIXlt(character()),
+  apparentTemperatureMax=numeric(),
+  apparentTemperatureMaxTime=as.POSIXlt(character()),
+  dewPoint=numeric(),
+  windSpeed=numeric(),
+  windBearing=numeric(),
+  cloudCover=numeric(),
+  humidity=numeric(),
+  pressure=numeric(),
+  visibility=numeric(),
+  ozone=numeric()
+)
+
+hourly.weather <- data.frame(
+  Zipcode=character(),
+  time=as.POSIXlt(character()),
+  summary=character(),
+  icon=character(),
+  precipIntensity=numeric(),
+  precipProbability=numeric(),
+  precipType=character(),
+  temperature=numeric(),
+  apparentTemperature=numeric(),
+  dewPoint=numeric(),
+  windSpeed=numeric(),
+  windBearing=numeric(),
+  cloudCover=numeric(),
+  humidity=numeric(),
+  pressure=numeric(),
+  visibility=numeric()
+)
+
+for (rowNum in 1:length(filteredZips$Zipcode)) {
+#for (rowNum in 1:2) {
   Zipcode <- filteredZips[rowNum,]$Zipcode
   Lat <- filteredZips[rowNum,]$Lat
   Long <- filteredZips[rowNum,]$Long
-  timespan <- seq(ISOdate(2013, 1, 1), ISOdate(2013, 1, 2), by = "day")
+  timespan <- seq(ISOdate(2013, 1, 1), ISOdate(2015, 12, 31), by = "day")
   
   for (i in 1:length(timespan)) {
     print(paste("Getting forcast for", Zipcode, "for date", timespan[i], sep = " "))
     fio.list <- get_forecast_for(Lat, Long, format(timespan[i], "%Y-%m-%dT%H:%M:%S"))
     
-    if (exists("daily.weather")) {
-      rbind(daily.weather, cbind(Zipcode, fio.list$daily))
-    } else {
-      daily.weather <- cbind(Zipcode, fio.list$daily)
-    }
-    
-    if (exists("hourly.weather")) {
-      rbind(hourly.weather, cbind(Zipcode, fio.list$hourly))
-    } else {
-      hourly.weather <- cbind(Zipcode, fio.list$hourly)
-    }
+    daily.weather <- merge(daily.weather, cbind(Zipcode, fio.list$daily), all = T)
+    hourly.weather <- merge(hourly.weather, cbind(Zipcode, fio.list$hourly), all=T)
     
   }
-  
-  write.csv(hourly.weather, "~/src/WAND-Challenge/persistant-data/hourly-weather.csv", row.names = FALSE)
-  write.csv(daily.weather, "~/src/WAND-Challenge/persistant-data/daily-weather.csv", row.names = FALSE)
 }
 
+write.csv(hourly.weather, "~/src/WAND-Challenge/persistant-data/hourly-weather.csv", row.names = FALSE)
+write.csv(daily.weather, "~/src/WAND-Challenge/persistant-data/daily-weather.csv", row.names = FALSE)
 
 ```
