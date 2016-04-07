@@ -50,7 +50,7 @@ hourly.weather <- data.frame(
 )
 
 # create a timespan we are interested in
-timespan <- seq(ISOdate(2014, 12, 6), ISOdate(2014, 12, 31), by = "day")
+timespan <- seq(ISOdate(2015, 1, 1), ISOdate(2015, 12, 31), by = "day")
 directory <- "~/src/WAND-Challenge/persistant-data/results"
 
 for (i in 1:length(timespan)) {
